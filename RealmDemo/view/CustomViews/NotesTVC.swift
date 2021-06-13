@@ -20,9 +20,9 @@ class NotesTVC: UITableViewCell {
     
     var data : Note?
     func setUI(){
-        self.backView.layer.cornerRadius = 10
+        self.backView.layer.cornerRadius = 5
         self.backView.layer.borderWidth = 1
-        self.backView.layer.borderColor = UIColor.gray.cgColor
+        self.backView.layer.borderColor = UIColor.lightGray.cgColor
         self.titleLabel.text = ""
         self.contentLabel.text = ""
         self.dateLabel.text = ""
@@ -32,11 +32,10 @@ class NotesTVC: UITableViewCell {
         if let data = note {
             self.data = data
             self.titleLabel.text = data.title
-            if data.title.count > 15 {
-                let index = data.content.index(data.content.startIndex, offsetBy: 15)
-                self.contentLabel.text = String(data.content[..<index]) + "..."
+            if data.content.count > 70 {
+                self.contentLabel.text = String(data.content.prefix(70))+"..."
             }else{
-                self.contentLabel.text = data.content+"..."
+                self.contentLabel.text = data.content
             }
             self.dateLabel.text = "Last Modified : " + "\(data.dateModified!.getFormattedDate())"
         }

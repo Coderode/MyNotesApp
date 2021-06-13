@@ -23,7 +23,5 @@ class EditUIVC: NSObject {
             self.view.textView.text = data.content
         }
     }
-    
-    
 }
 

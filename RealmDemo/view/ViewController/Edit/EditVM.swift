@@ -26,12 +26,11 @@ class EditVM: NSObject {
         let trimmedcontent = content.trimmingCharacters(in: .whitespacesAndNewlines)
         
         if trimmedtitle.count > 0 || trimmedcontent.count > 0 {
-            if let _ = self.view.data {
-                /// modifiy notte in realm
-                self.view.data?.title = title
-                self.view.data?.content = content
-                self.view.data?.dateModified = Date()
-                RealmDataBase.shared.updateDataForObject(object: self.view.data!)
+            if let data = self.view.data {
+                /// modifiy notte in realm only if there is change in content
+                if data.title != title || data.content != content {
+                    RealmDataBase.shared.updateDataForObject(id: data.id, title: title, content: content)
+                }
             }else {
                 /// create new note in realm
                 let note = Note(title: title)
@@ -44,12 +43,21 @@ class EditVM: NSObject {
         (self.view as? UIViewController)?.navigationController?.popViewController(animated: true)
     }
     @objc func didTapOnDeleteButton(){
-        if let data = self.view.data {
-            /// perfom delete on realm
-            RealmDataBase.shared.deleteDataForObject(id: data.id)
-        }
+        let alert = UIAlertController(title: "Delete Note!", message: "Are you sure to delete the note?",         preferredStyle: .alert)
         
-        (self.view as? UIViewController)?.navigationController?.popViewController(animated: true)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            //Cancel Action
+        }))
+        alert.addAction(UIAlertAction(title: "Delete",style: .destructive,handler: {(_: UIAlertAction!) in
+            /// delte note
+            if let data = self.view.data {
+                /// perfom delete on realm
+                RealmDataBase.shared.deleteDataForObject(id: data.id)
+            }
+            (self.view as? UIViewController)?.navigationController?.popViewController(animated: true)
+        }))
+        (self.view as! UIViewController).present(alert, animated: true, completion: nil)
+        
     }
     
 }

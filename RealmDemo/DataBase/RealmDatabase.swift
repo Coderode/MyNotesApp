@@ -21,7 +21,7 @@ class RealmDataBase : NSObject {
     }
     
     func fetchDataForObject() -> Results<Note>{
-        let objects =  realm.objects(Note.self)
+        let objects =  realm.objects(Note.self).sorted(byKeyPath: "dateModified", ascending: false)
         return objects
     }
     func addDataForObject(object : Note) {
@@ -29,9 +29,14 @@ class RealmDataBase : NSObject {
         realm.add(object)
         try! realm.commitWrite()
     }
-    func updateDataForObject(object : Note) {
+    func updateDataForObject(id : Int, title : String, content : String) {
+        let object = realm.object(ofType: Note.self, forPrimaryKey: id)
         realm.beginWrite()
-        realm.add(object, update: .modified)
+        if let object = object {
+            object.title = title
+            object.content = content
+            object.dateModified = Date()
+        }
         try! realm.commitWrite()
     }
     func deleteDataForObject(id : Int) {
