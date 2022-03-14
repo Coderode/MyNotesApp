@@ -29,6 +29,7 @@ class MyNotesVC: UIViewController,MyNotesVeiw {
         vm.delegate = self
         uivc.view = self
         vm.fetchNotesFromDatabase()
+        navigationController?.navigationBar.backgroundColor = .lightGray
     }
 }
 
